@@ -1,88 +1,150 @@
 const inquirer = require("inquirer");
+const htmlRender = require("./lib/htmlRenderer")
+const Manager = require("./lib/Manager")
+const Engineer = require("./lib/Engineer")
+// const Intern = require("./lib/Intern")
+const holdInfo = [];
 
-// Create questions to prompt the user questions about name, id, position, etc
-const questions = [
-    {
-        type: 'input',
-        name: 'name',
-        message: "What is the name of the employee?"
-    },
-    {
-        type: 'input',
-        name: 'position',
-        message: "What's the employee's position?"
-    },
-    {
-        type: 'input',
-        name: 'id',
-        message: "What is the employee's ID?"
-    },
-    {
-        type: 'input',
-        name: 'school',
-        message: "What school did the intern attend?"
-    },
-    {
-        type: 'input',
-        name: 'github_username',
-        message: "What is engineer's GitHub username?"
-    },
-]
-function generateHTML(userResponse){
-    return `<!DOCTYPE html>
-    <html lang="en">
-    
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>My Team</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" href="style.css">
-        <script src="https://kit.fontawesome.com/c502137733.js"></script>
-    </head>
-    
-    <body>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12 jumbotron mb-3 team-heading">
-                    <h1 class="text-center">My Team</h1>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="team-area col-12 d-flex justify-content-center">
-                    {{ team }}
-                    <li> ${userResponse.name} </li>
-                    <li> ${userResponse.position} </li>
-                    <li> ${userResponse.id} </li>
-                    <li> ${userResponse.school} </li>
-                    <li> ${userResponse.github_username} </li>
-                </div>
-            </div>
-        </div>
-    </body>
-    
-    </html>
-    `;
+function userQuestions() {
+    inquirer
+        .prompt({
+            name: "action",
+            type: "list",
+            message: "What kind of employee would you like to create?",
+            choices: [
+                "Manager",
+                "Engineer",
+                "Intern",
+                "Finished making users",
+            ]
+        })
+        .then(function (answer) {
+            console.log(holdInfo)
+            switch (answer.action) {
+                case "Manager":
+                    createManager();
+                    break;
+                case "Engineer":
+                    createEngineer();
+                    break;
+                case "Intern":
+                    createIntern();
+                    break;
+                case "Finished making users":
+                    createFinished();
+                    break;
+            }
+        });
 }
 
-// Asynchronus Function
-inquirer.prompt(questions)
-.then(userResponse => {
+function createManager() {
+    inquirer
+        .prompt(
+            [
+                {
+                    type: 'input',
+                    name: 'name',
+                    message: "What is the name of the employee?"
+                },
+                {
+                    type: 'input',
+                    name: 'email',
+                    message: "What is the employee's email?"
+                },
+
+                {
+                    type: 'input',
+                    name: 'id',
+                    message: "What is the employee's ID?"
+                },
+
+                {
+                    type: 'input',
+                    name: 'office_number',
+                    message: "What is the manager's office number?"
+                }
+            ]
+        )
+        .then(function (answer) {
+            const manager = new Manager(answer.name, answer.id, answer.email, answer.office_number)
+            console.log(manager)
+            holdInfo.push(manager)
+            userQuestions();
+        })
+}
+
+function createEngineer() {
+    inquirer
+        .prompt(
+            [
+                {
+                    type: 'input',
+                    name: 'name',
+                    message: "What is the name of the employee?"
+                },
+                {
+                    type: 'input',
+                    name: 'email',
+                    message: "What is the employee's email?"
+                },
+
+                {
+                    type: 'input',
+                    name: 'id',
+                    message: "What is the employee's ID?"
+                },
+
+                {
+                    type: 'input',
+                    name: 'gitHubUserName',
+                    message: "What is the engineer's github username?"
+                }
+            ]
+        )
+        .then(function (answer) {
+            const engineer = new Engineer(answer.name, answer.id, answer.email, answer.gitHubUserName)
+            console.log(engineer)
+            holdInfo.push(engineer)
+            userQuestions();
+        })
+}
+
+function createIntern() {
+    inquirer
+        .prompt(
+            [
+                {
+                    type: 'input',
+                    name: 'name',
+                    message: "What is the name of the employee?"
+                },
+                {
+                    type: 'input',
+                    name: 'email',
+                    message: "What is the employee's email?"
+                },
+
+                {
+                    type: 'input',
+                    name: 'id',
+                    message: "What is the employee's ID?"
+                },
+
+                {
+                    type: 'input',
+                    name: 'school',
+                    message: "What school did the intern attend"
+                }
+            ]
+        )
+        .then(function (answer) {
+            const intern = new Intern(answer.name, answer.id, answer.email, answer.school)
+            console.log(intern)
+            holdInfo.push(intern)
+            userQuestions();
+        })
+}
 
 
-axios.get(questions)
-    .then(function(response){
-       
-        
-        fs.writeFile("main.html", html(userResponse, response), function (err) {
-            if (err) {
-              throw err;
-            }
+userQuestions();
 
-    })
-});
-})
