@@ -1,9 +1,13 @@
 const inquirer = require("inquirer");
-const htmlRender = require("./lib/htmlRenderer")
+const render = require("./lib/htmlRenderer.js")
 const Manager = require("./lib/Manager")
 const Engineer = require("./lib/Engineer")
+const fs = require("fs")
+const util = require("util")
 // const Intern = require("./lib/Intern")
 const holdInfo = [];
+
+
 
 function userQuestions() {
     inquirer
@@ -144,10 +148,18 @@ function createIntern() {
             userQuestions();
         })
 }
-
+// Function that allows the content to be displayed in html format
+function createFinished (){
+    let html = render(holdInfo) 
+    fs.writeFile("main.html", html, function(err){
+        console.log(err);
+        
+    })
+}
 
 userQuestions();
 
-// module.exports = main.html;
+
+
 
 
